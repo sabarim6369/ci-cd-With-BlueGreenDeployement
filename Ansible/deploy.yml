@@ -1,0 +1,22 @@
+- hosts: all
+  become: yes
+  tasks:
+    - name: Install Docker
+      yum:
+        name: docker
+        state: present
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Pull latest Docker image
+      command: docker pull sabarim6369/food-app:latest
+
+    - name: Stop old container (if running)
+      command: docker stop webapp || true
+
+    - name: Run container
+      command: docker run -d --name webapp -p 80:80 sabarim6369/food-app:latest
